@@ -29,6 +29,8 @@ void dispMain() {
 		if ((ft > -40) && (ft < 40)) {
 			xT = ft;
 		}
+		
+		rtc_time(&hh, &mm, 0, 0);
 	}
 	
 	if (--delay_meas_p == 0){
@@ -47,9 +49,7 @@ void dispMain() {
 	}
 	delay = 0;
 	
-	rtc_time(&hh, &mm, 0, 0);
 	Dyn_Code(digits[hh/10], digits[hh%10], digits[mm/10], digits[mm%10], 0);
-	
 	Dyn_Number((unsigned int)xT*10, 1, 1);
 	Dyn_Number((unsigned int)xP, 1, 2);
 
