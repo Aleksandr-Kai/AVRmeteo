@@ -29,11 +29,7 @@ Data Stack size         : 256
 
 #define MODE_TIMEOUT 5000
 
-float temp[2], f_Tmp;
-int i_Tmp; 
-unsigned char sensor, latch, temp_read;
 char mm, hh;
-char buff[100];
 
 void setMain();
 void terminator() {}
@@ -163,9 +159,7 @@ void setMain() {
 void main(void) {
 	char i;
 	chipinit();
-
-	sensor = 0;
-	//rtc_set_time(11, 59, 0, 0);
+	
 	BMP180_Calibration();
 
 	for(i = 0; i < 24; i++) {
