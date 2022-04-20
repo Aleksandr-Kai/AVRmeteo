@@ -111,11 +111,11 @@ void minutHoldPlus() {
 
 void updateTime() {
 	putsf("Update time\r");
-	//rtc_set_time(hh, mm, 0, 0);
-	//setMain();
+	rtc_set_time(hh, mm, 0, 0);
 	display = &terminator;
 	Dyn_Code(digits[hh/10], digits[hh%10], digits[mm/10], digits[mm%10], 0);
 	Dyn_Code(DI_null, DI_code_S, DI_code_E, DI_code_t, 1);
+	timeoutCounter = 1000;
 }
 
 void setTime() {
