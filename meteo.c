@@ -2,7 +2,7 @@
 This program was created by the
 CodeWizardAVR V3.12 Advanced
 Automatic Program Generator
-© Copyright 1998-2014 Pavel Haiduc, HP InfoTech s.r.l.
+ï¿½ Copyright 1998-2014 Pavel Haiduc, HP InfoTech s.r.l.
 http://www.hpinfotech.com
 
 Project : 
@@ -140,6 +140,7 @@ void setHistory() {
 	onPlusHold = &terminator;
 	onMinusHold = &terminator;
 	onMenuPressed = &setMain;
+	delay_switch_t = DELAY_SWITCH_T/3;
 	setTimeout(MODE_TIMEOUT, &setMain);
 }
 
@@ -162,8 +163,11 @@ void main(void) {
 	
 	BMP180_Calibration();
 
+	outtemp = TEMP_LIMIT*10;
+
 	for(i = 0; i < 24; i++) {
-		history[i].inT = 255;
+		history[i].inT = TEMP_LIMIT*10;
+		history[i].outT = TEMP_LIMIT*10;
 		history[i].P = 0;
 	}
 	putsf("\033c");
