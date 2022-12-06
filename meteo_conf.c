@@ -43,7 +43,7 @@ interrupt [TIM0_OVF] void timer0_ovf_isr(void)
 }
 
 //*********************************************************************************************************************
-char temprcv = 0;
+
 int outtemp;
 char outtempready = 0;
 

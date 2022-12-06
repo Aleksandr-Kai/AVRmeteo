@@ -1,10 +1,6 @@
 #define PRESS_CNT 10
 #define HOLD_CNT 100
 
-#define BTN_PLUS state == 1
-#define BTN_MINUS state == 3
-#define BTN_MENU state == 2
-
 char btnPlusCount = 0;
 void (*onPlusPressed)();
 void (*onPlusHold)();
@@ -19,33 +15,35 @@ void (*onMenuHold)();
 
 int prevBtnCode = 0;
 int code;
-char state = 0;
 
 void ScanButtons()
 {
 	code = read_adc(4);
-	if (code - prevBtnCode > 90 || code - prevBtnCode < -90)
+	if (code >= 0 && code < 200)
 	{
-		if (state != 1 && code >= 0 && code < 200)
+		if (btnMinusCount < HOLD_CNT)
 		{
-			state = 1;
+			btnMinusCount++;
 		}
-		else if (state != 2 && code > 200 && code < 380)
+		else
 		{
-			state = 2;
-		}
-		else if (state != 3 && code > 380 && code < 480)
-		{
-			state = 3;
-		}
-		else if (state != 0 && code > 480)
-		{
-			state = 0;
+			if (onMinusHold != NULL)
+				onMinusHold();
 		}
 	}
-	prevBtnCode = code;
-
-	if (BTN_PLUS)
+	else if (code > 200 && code < 380)
+	{
+		if (btnMenuCount < HOLD_CNT)
+		{
+			btnMenuCount++;
+		}
+		else
+		{
+			if (onMenuHold != NULL)
+				onMenuHold();
+		}
+	}
+	else if (code > 380 && code < 480)
 	{
 		if (btnPlusCount < HOLD_CNT)
 		{
@@ -65,44 +63,14 @@ void ScanButtons()
 				onPlusPressed();
 		}
 		btnPlusCount = 0;
-	}
 
-	if (BTN_MINUS)
-	{
-		if (btnMinusCount < HOLD_CNT)
-		{
-			btnMinusCount++;
-		}
-		else
-		{
-			if (onMinusHold != NULL)
-				onMinusHold();
-		}
-	}
-	else
-	{
 		if ((btnMinusCount >= PRESS_CNT) && (btnMinusCount < HOLD_CNT))
 		{
 			if (onMinusPressed != NULL)
 				onMinusPressed();
 		}
 		btnMinusCount = 0;
-	}
 
-	if (BTN_MENU)
-	{
-		if (btnMenuCount < HOLD_CNT)
-		{
-			btnMenuCount++;
-		}
-		else
-		{
-			if (onMenuHold != NULL)
-				onMenuHold();
-		}
-	}
-	else
-	{
 		if ((btnMenuCount >= PRESS_CNT) && (btnMenuCount < HOLD_CNT))
 		{
 			if (onMenuPressed != NULL)
@@ -110,4 +78,6 @@ void ScanButtons()
 		}
 		btnMenuCount = 0;
 	}
+
+	prevBtnCode = code;
 }

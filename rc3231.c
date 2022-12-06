@@ -7,30 +7,6 @@
 #define EE_W	0xA0
 #define EE_R	0xA1
 
-float rtc_temp() {
-	char th, tl;
-	float t;
-	
-	i2c_start();    // запуск i2c
-	i2c_write(RTC_W);    // передача адреса устройства, режим записи
-	i2c_write(0x11);   // передача адреса памяти 
-	i2c_stop();    // остановка i2c
-
-	i2c_start();    // запуск i2c
-	i2c_write(RTC_R);    // передача адреса устройства, режим чтения
-	
-	th = i2c_read(1);
-	tl = i2c_read(0);
-	i2c_stop();
-	
-	t = th & 0x7f;
-	t += (tl >> 6) * 0.25;
-	if (th & 0x80)
-		t = -t;
-	
-	return t;
-}
-
 void rtc_time(char* hh, char* mm, char* ss, char* pm) {
 	char data = 0;
 
