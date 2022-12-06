@@ -5,12 +5,12 @@ Automatic Program Generator
 � Copyright 1998-2014 Pavel Haiduc, HP InfoTech s.r.l.
 http://www.hpinfotech.com
 
-Project : 
-Version : 
+Project :
+Version :
 Date    : 29.03.2022
-Author  : 
-Company : 
-Comments: 
+Author  :
+Company :
+Comments:
 
 
 Chip type               : ATmega16A
@@ -39,89 +39,98 @@ void terminator() {}
 void (*timeoutHandler)();
 int timeoutCounter = -1;
 int timeoutStore = -1;
-void setTimeout(int duration, void (*handler)()) {
+void setTimeout(int duration, void (*handler)())
+{
 	timeoutCounter = duration;
 	timeoutStore = duration;
 	timeoutHandler = handler;
 }
-void timeoutReset(){
+void timeoutReset()
+{
 	timeoutCounter = timeoutStore;
 }
 // ***********************************************************
 #include "display.c"
 #include "buttons.c"
 
-interrupt [TIM2_OVF] void timer2_ovf_isr(void)
+interrupt[TIM2_OVF] void timer2_ovf_isr(void)
 {
-	TCNT2=0x64;
+	TCNT2 = 0x64;
 	ScanButtons();
 }
 
-void hourPlus(){
-	if(++hh > 23) hh = 0;
+void hourPlus()
+{
+	if (++hh > 23)
+		hh = 0;
 	timeoutReset();
 }
 
-void hourMinus(){
-	if(--hh > 23) hh = 23;
+void histHourPlus()
+{
 	timeoutReset();
+	if (hh == phistory)
+		return;
+	if (++hh > 23)
+		hh = 0;
 }
 
-void histHourPlus(){
-	timeoutReset();
-	if (hh == phistory) return;
-	if(++hh > 23) hh = 0;
-}
-
-void histHourMinus(){
+void histHourMinus()
+{
 	char h;
 	timeoutReset();
-	h = hh-1;
-	if (h > 23) h = 23;
-	if (h == phistory) return;
-	if(--hh > 23) hh = 23;
+	h = hh - 1;
+	if (h > 23)
+		h = 23;
+	if (h == phistory)
+		return;
+	if (--hh > 23)
+		hh = 23;
 }
 
 char hdelay = 0;
-void hourHoldPlus(){
-	if(++hdelay < 20) return;
+void hourHoldPlus()
+{
+	if (++hdelay < 20)
+		return;
 	hdelay = 0;
-	if(++hh > 23) hh = 0;
+	if (++hh > 23)
+		hh = 0;
 	timeoutReset();
 }
 
-void hourHoldMinus(){
-	if(++hdelay < 20) return;
+void minutPlus()
+{
+	if (++mm > 59)
+		mm = 0;
+	timeoutReset();
+}
+
+void minutHoldPlus()
+{
+	if (++hdelay < 10)
+		return;
 	hdelay = 0;
-	if(--hh > 23) hh = 23;
+	if (++mm > 59)
+		mm = 0;
 	timeoutReset();
 }
 
-void minutPlus() {
-	if(++mm > 59) mm = 0;
-	timeoutReset();
-}
-
-void minutHoldPlus() {
-	if(++hdelay < 10) return;
-	hdelay = 0;
-	if(++mm > 59) mm = 0;
-	timeoutReset();
-}
-
-void updateTime() {
+void updateTime()
+{
 	putsf("Update time\r");
 	rtc_set_time(hh, mm, 0, 0);
 	display = &terminator;
-	Dyn_Code(digits[hh/10], digits[hh%10], digits[mm/10], digits[mm%10], 0);
+	Dyn_Code(digits[hh / 10], digits[hh % 10], digits[mm / 10], digits[mm % 10], 0);
 	Dyn_Code(DI_null, DI_code_S, DI_code_E, DI_code_t, 1);
 	timeoutCounter = 1000;
 }
 
-void setTime() {
+void setTime()
+{
 	putsf("Set Time\r");
 	blinkDots = 0;
-	
+
 	display = &dispTime;
 	onPlusPressed = &hourPlus;
 	onMinusPressed = &minutPlus;
@@ -131,7 +140,8 @@ void setTime() {
 	setTimeout(MODE_TIMEOUT, &setMain);
 }
 
-void setHistory() {
+void setHistory()
+{
 	putsf("Set History\r");
 	blinkDots = 0;
 	display = &dispHistory;
@@ -140,15 +150,12 @@ void setHistory() {
 	onPlusHold = &terminator;
 	onMinusHold = &terminator;
 	onMenuPressed = &setMain;
-	delay_switch_t = DELAY_SWITCH_T/3;
+	delay_switch_t = DELAY_SWITCH_T / 3;
 	setTimeout(MODE_TIMEOUT, &setMain);
 }
 
-void setMenu() {
-	putsf("Set Menu\r");
-}
-
-void setMain() {
+void setMain()
+{
 	putsf("Set Main\r");
 	blinkDots = 1;
 	display = &dispMain;
@@ -157,26 +164,31 @@ void setMain() {
 	onMenuPressed = &setTime;
 }
 
-void main(void) {	
+void main(void)
+{
 	char i;
 	chipinit();
-	
+
 	BMP180_Calibration();
 
-	outtemp = TEMP_LIMIT*10;
+	outtemp = TEMP_LIMIT * 10;
 
-	for(i = 0; i < 24; i++) {
-		history[i].inT = TEMP_LIMIT*10;
-		history[i].outT = TEMP_LIMIT*10;
+	for (i = 0; i < 24; i++)
+	{
+		history[i].inT = TEMP_LIMIT * 10;
+		history[i].outT = TEMP_LIMIT * 10;
 		history[i].P = 0;
 	}
 	putsf("\033c");
 	setMain();
 
-	while (1) {
+	while (1)
+	{
 		display();
-		if (timeoutCounter > 0) {
-			if (--timeoutCounter == 0) {
+		if (timeoutCounter > 0)
+		{
+			if (--timeoutCounter == 0)
+			{
 				timeoutHandler();
 			}
 		}
