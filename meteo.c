@@ -23,7 +23,7 @@ Data Stack size         : 256
 
 #include <mega16a.h>
 #include <delay.h>
-#include <meteo_conf.c>
+#include "meteo_conf.c"
 #include "rc3231.c"
 #include "bmp180.c"
 
@@ -157,7 +157,7 @@ void setMain() {
 	onMenuPressed = &setTime;
 }
 
-void main(void) {
+void main(void) {	
 	char i;
 	chipinit();
 	
@@ -172,7 +172,7 @@ void main(void) {
 	}
 	putsf("\033c");
 	setMain();
-	
+
 	while (1) {
 		display();
 		if (timeoutCounter > 0) {

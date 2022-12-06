@@ -1,12 +1,8 @@
 #include "Dyn.h"
+#include "uart.c"
+#include "adc.c"
 
 #include <i2c.h>
-
-#define DATA_REGISTER_EMPTY (1<<UDRE)
-#define RX_COMPLETE (1<<RXC)
-#define FRAMING_ERROR (1<<FE)
-#define PARITY_ERROR (1<<UPE)
-#define DATA_OVERRUN (1<<DOR)
 
 // 1 Wire Bus interface functions
 #include <1wire.h>
@@ -41,7 +37,7 @@ interrupt [TIM0_OVF] void timer0_ovf_isr(void)
 	TCNT0=0x06;
 	Dyn_Indicate();
 	if (++dots_cnt == 500) {
-		if(PORTD.7 && blinkDots) PORTD.7 = 0; else PORTD.7 = 1;
+		if(PORTA.3 && blinkDots) PORTA.3 = 0; else PORTA.3 = 1;
 		dots_cnt = 0;
 	}
 }
@@ -51,111 +47,13 @@ char temprcv = 0;
 int outtemp;
 char outtempready = 0;
 
-#define DATA_REGISTER_EMPTY (1<<UDRE)
-#define RX_COMPLETE (1<<RXC)
-#define FRAMING_ERROR (1<<FE)
-#define PARITY_ERROR (1<<UPE)
-#define DATA_OVERRUN (1<<DOR)
-
-// USART Receiver buffer
-#define RX_BUFFER_SIZE 8
-char rx_buffer[RX_BUFFER_SIZE];
-
-#if RX_BUFFER_SIZE <= 256
-unsigned char rx_wr_index=0,rx_rd_index=0;
-#else
-unsigned int rx_wr_index=0,rx_rd_index=0;
-#endif
-
-#if RX_BUFFER_SIZE < 256
-unsigned char rx_counter=0;
-#else
-unsigned int rx_counter=0;
-#endif
-
-// This flag is set on USART Receiver buffer overflow
-bit rx_buffer_overflow;
-
-// USART Receiver interrupt service routine
-interrupt [USART_RXC] void usart_rx_isr(void)
-{
-char status,data;
-status=UCSRA;
-data=UDR;
-
-switch (temprcv)
-{
-	case 0:
-		if (data == 0x88) {
-			temprcv = 1;
-			outtempready = 0;
-		}
-		break;
-	case 1:
-		outtemp = data;
-		outtemp = outtemp << 8;
-		temprcv = 2;
-		break;
-	case 2:
-		outtemp |= data;
-		temprcv = 0;
-		outtempready = 1;
-		break;
-
-	default:
-		break;
-}
-
-if ((status & (FRAMING_ERROR | PARITY_ERROR | DATA_OVERRUN))==0)
-   {
-	   
-
-   rx_buffer[rx_wr_index++]=data;
-#if RX_BUFFER_SIZE == 256
-   // special case for receiver buffer size=256
-   if (++rx_counter == 0) rx_buffer_overflow=1;
-#else
-   if (rx_wr_index == RX_BUFFER_SIZE) rx_wr_index=0;
-   if (++rx_counter == RX_BUFFER_SIZE)
-      {
-      rx_counter=0;
-      rx_buffer_overflow=1;
-      }
-#endif
-   }
-}
-
-#ifndef _DEBUG_TERMINAL_IO_
-// Get a character from the USART Receiver buffer
-#define _ALTERNATE_GETCHAR_
-#pragma used+
-char getchar(void)
-{
-char data;
-while (rx_counter==0);
-data=rx_buffer[rx_rd_index++];
-#if RX_BUFFER_SIZE != 256
-if (rx_rd_index == RX_BUFFER_SIZE) rx_rd_index=0;
-#endif
-#asm("cli")
---rx_counter;
-#asm("sei")
-return data;
-}
-#pragma used-
-#endif
-
-// Standard Input/Output functions
-#include <stdio.h>
-
-
 //*********************************************************************************************************************
 
 void chipinit() {
 	// Input/Output Ports initialization
 	// Port A initialization
 	// Function: Bit7=In Bit6=In Bit5=In Bit4=In Bit3=Out Bit2=Out Bit1=Out Bit0=Out 
-	DDRA=(1<<DDA7) | (0<<DDA6) | (0<<DDA5) | (0<<DDA4) | (1<<DDA3) | (1<<DDA2) | (1<<DDA1) | (1<<DDA0);
+	DDRA=(0<<DDA7) | (0<<DDA6) | (0<<DDA5) | (0<<DDA4) | (1<<DDA3) | (1<<DDA2) | (1<<DDA1) | (1<<DDA0);
 	// State: Bit7=T Bit6=T Bit5=T Bit4=T Bit3=0 Bit2=0 Bit1=0 Bit0=0 
 	PORTA=(1<<PORTA7) | (0<<PORTA6) | (0<<PORTA5) | (0<<PORTA4) | (0<<PORTA3) | (0<<PORTA2) | (0<<PORTA1) | (0<<PORTA0);
 
@@ -231,19 +129,6 @@ void chipinit() {
 	MCUCR=(0<<ISC11) | (0<<ISC10) | (0<<ISC01) | (0<<ISC00);
 	MCUCSR=(0<<ISC2);
 
-	// Analog Comparator initialization
-	// Analog Comparator: Off
-	// The Analog Comparator's positive input is
-	// connected to the AIN0 pin
-	// The Analog Comparator's negative input is
-	// connected to the AIN1 pin
-	ACSR=(1<<ACD) | (0<<ACBG) | (0<<ACO) | (0<<ACI) | (0<<ACIE) | (0<<ACIC) | (0<<ACIS1) | (0<<ACIS0);
-	SFIOR=(0<<ACME);
-
-	// ADC initialization
-	// ADC disabled
-	ADCSRA=(0<<ADEN) | (0<<ADSC) | (0<<ADATE) | (0<<ADIF) | (0<<ADIE) | (0<<ADPS2) | (0<<ADPS1) | (0<<ADPS0);
-
 	// SPI initialization
 	// SPI disabled
 	SPCR=(0<<SPIE) | (0<<SPE) | (0<<DORD) | (0<<MSTR) | (0<<CPOL) | (0<<CPHA) | (0<<SPR1) | (0<<SPR0);
@@ -252,17 +137,8 @@ void chipinit() {
 	// TWI disabled
 	TWCR=(0<<TWEA) | (0<<TWSTA) | (0<<TWSTO) | (0<<TWEN) | (0<<TWIE);
 	
-	// USART initialization
-	// Communication Parameters: 8 Data, 1 Stop, No Parity
-	// USART Receiver: On
-	// USART Transmitter: Off
-	// USART Mode: Asynchronous
-	// USART Baud Rate: 9600
-	UCSRA=(0<<RXC) | (0<<TXC) | (0<<UDRE) | (0<<FE) | (0<<DOR) | (0<<UPE) | (0<<U2X) | (0<<MPCM);
-	UCSRB=(1<<RXCIE) | (0<<TXCIE) | (0<<UDRIE) | (1<<RXEN) | (0<<TXEN) | (0<<UCSZ2) | (0<<RXB8) | (0<<TXB8);
-	UCSRC=(1<<URSEL) | (0<<UMSEL) | (0<<UPM1) | (0<<UPM0) | (0<<USBS) | (1<<UCSZ1) | (1<<UCSZ0) | (0<<UCPOL);
-	UBRRH=0x00;
-	UBRRL=0x67;
+	InitADC();
+	InitUART();
 
 	// 1 Wire Bus initialization
 	// 1 Wire Data port: PORTD

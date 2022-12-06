@@ -7,23 +7,26 @@
 //   |    _     |     _    |     _    |     _    |
 //   |   |_|    |    |_|   |    |_|   |    |_|   |
 //   |   |_|    |    |_|   |    |_|   |    |_|   |
-//   |DI_LED1_K1000|DI_LED1_K100 | DI_LED1_K10 |  DI_LED1_K1 |
+//   |          |          |          |          |
 //   |__________|__________|__________|__________|
+//  DI_LED1_K1000          DI_LED1_K10
+//              DI_LED1_K100           DI_LED1_K1
 //=======================================================
-#define DI_LED1_K1		PORTB.3  // катоды ПЕРВОГО индикатора
-#define DI_LED1_K10		PORTB.2  // * * * * * * * * * * * * *
-#define DI_LED1_K100	PORTB.1  // * * * * * * * * * * * * *
-#define DI_LED1_K1000	PORTB.0  // * * * * * * * * * * * * *
+#define DI_LED1_K1		PORTB.5  // катоды ПЕРВОГО индикатора
+#define DI_LED1_K10		PORTB.6  // * * * * * * * * * * * * *
+#define DI_LED1_K100	PORTB.7  // * * * * * * * * * * * * *
+#define DI_LED1_K1000	PORTD.7  // * * * * * * * * * * * * *
+#define DI_LED1_DASH    PORTA.3
 
-#define DI_LED2_K1		PORTB.7  // катоды ВТОРОГО индикатора  
-#define DI_LED2_K10		PORTB.6  // * * * * * * * * * * * * *  
-#define DI_LED2_K100	PORTB.5  // * * * * * * * * * * * * *  
+#define DI_LED2_K1		PORTB.1  // катоды ВТОРОГО индикатора  
+#define DI_LED2_K10		PORTB.2  // * * * * * * * * * * * * *  
+#define DI_LED2_K100	PORTB.3  // * * * * * * * * * * * * *  
 #define DI_LED2_K1000	PORTB.4  // * * * * * * * * * * * * *  
 	
-#define DI_LED3_K1		PORTA.3  // катоды ВТОРОГО индикатора  
-#define DI_LED3_K10		PORTA.2  // * * * * * * * * * * * * *  
-#define DI_LED3_K100	PORTA.1  // * * * * * * * * * * * * *  
-#define DI_LED3_K1000	PORTA.0  // * * * * * * * * * * * * *  
+#define DI_LED3_K1		PORTA.2  // катоды ВТОРОГО индикатора  
+#define DI_LED3_K10		PORTA.1  // * * * * * * * * * * * * *  
+#define DI_LED3_K100	PORTA.0  // * * * * * * * * * * * * *  
+#define DI_LED3_K1000	PORTB.0  // * * * * * * * * * * * * *  
 
 //======================	
 //         Aноды
@@ -86,7 +89,7 @@
 #define DI_code_G	67
 #define DI_code_H	145
 #define DI_code_h	209
-#define DI_code_i		223
+#define DI_code_i	223
 #define DI_code_J	135
 #define DI_code_L	227
 #define DI_code_n	213
