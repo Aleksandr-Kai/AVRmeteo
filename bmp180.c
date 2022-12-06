@@ -32,28 +32,6 @@ BMP280_S32_t t_fine;
 #define BMP180_R 0xED
 #define BMP180_W 0xEC
 
-// чтение регистра 16 бит
-unsigned int Read(char address) {
- 
-   unsigned int msb=0;
-   unsigned int lsb=0;
-   unsigned int data;
- 
-   i2c_start();    // запуск i2c
-   i2c_write(BMP180_W);    // передача адреса устройства, режим записи
-   i2c_write(address);   // передача адреса памяти 
-   i2c_stop();    // остановка i2c
- 
-   i2c_start();    // запуск i2c
-   i2c_write(BMP180_R);    // передача адреса устройства, режим чтения
-   msb = i2c_read(1);
-   lsb = i2c_read(0);
-   i2c_stop();    // остановка i2c
- 
-   data = (msb << 8) + lsb;
-   return data;
-}
-
 unsigned int ReadCalib(char address) {
  
    unsigned int msb=0;
