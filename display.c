@@ -151,7 +151,8 @@ void dispHistory()
 {
 	if (++timeBlink < 400)
 	{
-		Dyn_Code(digits[hh / 10], digits[hh % 10], digits[0], digits[0], TIME_LED);
+		// Dyn_Code(digits[hh / 10], digits[hh % 10], digits[0], digits[0], TIME_LED);
+		Dyn_Code(digits[hh / 10], digits[hh % 10], DI_null, DI_code_H, TIME_LED);
 	}
 	else if (timeBlink < 800)
 	{
