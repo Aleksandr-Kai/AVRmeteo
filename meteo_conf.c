@@ -29,23 +29,24 @@ unsigned char ds1820_rom_codes[MAX_DS1820][9];
 
 int dots_cnt = 0;
 char blinkDots = 1;
+
 // Timer 0 overflow interrupt service routine
 interrupt[TIM0_OVF] void timer0_ovf_isr(void)
 {
 	// Reinitialize Timer 0 value
-	// TCNT0=0x38;
+	// TCNT0 = 0xF0;
 	TCNT0 = 0x06;
 	Dyn_Indicate();
+
 	if (++dots_cnt == 500)
 	{
-		if (PORTA .3 && blinkDots)
-			PORTA .3 = 0;
+		if (DI_LED1_COLON && blinkDots)
+			DI_LED1_COLON = 0;
 		else
-			PORTA .3 = 1;
+			DI_LED1_COLON = 1;
 		dots_cnt = 0;
 	}
 }
-
 
 void chipinit()
 {
