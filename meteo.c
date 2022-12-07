@@ -143,6 +143,7 @@ void setTime()
 void setHistory()
 {
 	putsf("Set History\r");
+	phistory = hh;
 	blinkDots = 0;
 	display = &dispHistory;
 	onPlusPressed = &histHourPlus;
