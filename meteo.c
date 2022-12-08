@@ -164,11 +164,15 @@ void setHistory()
 void setMain()
 {
 	putsf("Set Main\r");
+	delay_meas_t = 1;
+	delay_meas_p = 1;
 	blinkDots = 1;
 	display = &dispMain;
 	onPlusPressed = &setHistory;
 	onMinusPressed = &setHistory;
 	onMenuPressed = &setTime;
+	onPlusHold = &terminator;
+	onMinusHold = &terminator;
 }
 
 void main(void)
