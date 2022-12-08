@@ -142,8 +142,14 @@ void setTime()
 
 void setHistory()
 {
+	if (phistory == 255)
+	{
+		// Dyn_Code(DI_null, DI_null, DI_null, DI_null, 0);
+		// Dyn_Code(DI_null, DI_null, DI_code_n, DI_code_o, 1);
+		// Dyn_Code(DI_code_h, DI_code_i, DI_code_S, DI_code_t, 2);
+		return;
+	}
 	putsf("Set History\r");
-	phistory = hh;
 	blinkDots = 0;
 	display = &dispHistory;
 	onPlusPressed = &histHourPlus;

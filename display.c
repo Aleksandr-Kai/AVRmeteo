@@ -9,7 +9,7 @@ struct
 	int inT;
 	int P;
 } history[24];
-char phistory = 0;
+char phistory = 255;
 
 #define DELAY_SWITCH_T 2000
 unsigned int delay_switch_t = 1;

@@ -7,9 +7,9 @@ A=
 C=
 D=29.03.2022
 Files=1
-OpenedFiles=1
-OF1=buttons.c
-Active1=1
+OpenedFiles=3
+OF1=meteo_conf.c
+Active1=0
 DebugOutputListFilesDirectory=Debug\List
 DebugOutputObjectFilesDirectory=Debug
 DebugOutputExecutableFilesDirectory=Debug\Exe
@@ -18,7 +18,7 @@ OutputListFilesDirectory=Release\List
 OutputObjectFilesDirectory=Release
 OutputExecutableFilesDirectory=Release\Exe
 OutputLinkerFilesDirectory=Release\Exe
-AllowDisplayFunctionCallTree=0
+AllowDisplayFunctionCallTree=1
 CleanUp=2
 EditorPanelMode=0
 ActiveEditorPanel=0
@@ -26,14 +26,19 @@ Active0=0
 EditorPanel0=0
 PageIndex0=0
 EditorPanel1=0
-TimeStamp1=1434811968
+TimeStamp1=1434877665
 PageIndex1=1
-OF2=bmp180.c
-Active2=1
+OF2=uart.c
+Active2=0
 EditorPanel2=0
-TimeStamp2=1418550726
+TimeStamp2=1434877707
 PageIndex2=2
 F1=meteo.c
+OF3=Dyn.c
+Active3=1
+EditorPanel3=0
+TimeStamp3=1434942089
+PageIndex3=3
 [CompilerDebug]
 Chip=ATmega16A
 CPUClock=16000000
@@ -132,8 +137,8 @@ WatchAVR8LAutoVariables=0
 UseEEPROMLocation0=1
 RebuildAll=0
 LinkageInformationPresent=1
-COFFileTimeStamp=1434877672
-Build=497
+COFFileTimeStamp=1434992399
+Build=555
 [DefinedSymbolsDebug]
 Count=0
 [Compiler]
@@ -235,7 +240,7 @@ UseEEPROMLocation0=1
 RebuildAll=1
 LinkageInformationPresent=0
 COFFileTimeStamp=-1
-Build=497
+Build=555
 IncludePath0=
 IncludePath1=
 IncludePath2=
@@ -454,7 +459,7 @@ UserProgPath=
 UserProgCmdLine=
 UserProgWorkDir=
 [BookmarksFoldedCode]
-Files=8
+Files=10
 F1=meteo.c
 F2=Dyn.c
 F3=Debug\List\meteo.asm
@@ -463,6 +468,8 @@ F5=buttons.c
 F6=rc3231.c
 F7=display.c
 F8=meteo_conf.c
+F9=uart.c
+F10=C:\cvavreval\inc\stdlib.h
 [Bookmarks1]
 TimeStamp=1434876750
 Row=0
@@ -496,10 +503,10 @@ L13=Enhanced function parameters passing: Yes
 L14=Automatic register allocation: Yes
 L15=Smart register allocation: Yes
 L16=
-L17=Build: 497
-L18=15083 line(s) compiled
+L17=Build: 555
+L18=14891 line(s) compiled
 L19=No errors
-L20=11 warning(s)
+L20=6 warning(s)
 L21=
 L22=Bit variables area: 0x2 to 0x2
 L23=Bit variables size: 1 byte(s)
@@ -518,19 +525,19 @@ L35=Heap size: 0 byte(s)
 Lines=39
 L36=
 L37=EEPROM usage: 0 byte(s), 0,0% of EEPROM
-L38=Program size: 4078 words (8156 bytes), 49,8% of FLASH
+L38=Program size: 4087 words (8174 bytes), 49,9% of FLASH
 L39=363 words (726 bytes), 8,2% reduced by Code Compression
 [BuildInfoAssembler]
 Lines=12
 L1=AVRASM: AVR macro assembler 2.1.30 (build 592 Nov  7 2008 12:38:17)
 L2=Copyright (C) 1995-2008 ATMEL Corporation
 L3=
-L4=Z:\home\kai\AVR projects\MeteoStation\termometr 2\Debug\List\meteo.asm(6514): No EEPROM data, deleting Z:\home\kai\AVR projects\MeteoStation\termometr 2\Debug\Exe\meteo.eep
+L4=Z:\home\kai\AVR projects\MeteoStation\termometr 2\Debug\List\meteo.asm(6476): No EEPROM data, deleting Z:\home\kai\AVR projects\MeteoStation\termometr 2\Debug\Exe\meteo.eep
 L5=
 L6=ATmega16A memory use summary [bytes]:
 L7=Segment   Begin    End      Code   Data   Used    Size   Use%
 L8=---------------------------------------------------------------
-L9=[.cseg] 0x000000 0x001fdc   7960    196   8156   16384  49.8%
+L9=[.cseg] 0x000000 0x001fee   7970    204   8174   16384  49.9%
 L10=[.dseg] 0x000060 0x00036c      0    350    350    1024  34.2%
 L11=[.eseg] 0x000000 0x000000      0      0      0     512   0.0%
 L12=
@@ -563,9 +570,9 @@ Row=0
 Column=0
 ScrollPosX=0
 ScrollPosY=0
-TimeStamp=1434814151
+TimeStamp=1434943179
 [Bookmarks2]
-TimeStamp=1434874900
+TimeStamp=1434942089
 Row=0
 Column=0
 ScrollPosX=0
@@ -670,10 +677,8 @@ Blocks=0
 Blocks=0
 [FoldedCode1]
 Blocks=0
-[FoldedCode2]
-Blocks=0
 [Bookmarks8]
-TimeStamp=1434877592
+TimeStamp=1434941601
 Row=0
 Column=0
 ScrollPosX=0
@@ -688,9 +693,47 @@ BK6=-1
 BK7=-1
 BK8=-1
 BK9=-1
-[FoldedCode8]
-Blocks=0
 [FoldedCode6]
+Blocks=0
+[Bookmarks9]
+TimeStamp=1434877707
+Row=31
+Column=74
+ScrollPosX=0
+ScrollPosY=153
+BK0=-1
+BK1=-1
+BK2=-1
+BK3=-1
+BK4=-1
+BK5=-1
+BK6=-1
+BK7=-1
+BK8=-1
+BK9=-1
+[Bookmarks10]
+TimeStamp=942822163
+Row=20
+Column=0
+ScrollPosX=0
+ScrollPosY=0
+BK0=-1
+BK1=-1
+BK2=-1
+BK3=-1
+BK4=-1
+BK5=-1
+BK6=-1
+BK7=-1
+BK8=-1
+BK9=-1
+[FoldedCode10]
+Blocks=0
+[FoldedCode2]
+Blocks=0
+[FoldedCode9]
+Blocks=0
+[FoldedCode8]
 Blocks=0
 [HeadersList]
 Files=1
