@@ -26,6 +26,7 @@ Data Stack size         : 256
 #include "meteo_conf.c"
 #include "rc3231.c"
 #include "bmp180.c"
+#include "virsion.h"
 
 #define MODE_TIMEOUT 5000
 
@@ -33,6 +34,7 @@ char mm, hh;
 
 void setMain();
 void terminator() {}
+void showVersion();
 // ***********************************************************
 //                              Timeout
 // ***********************************************************
@@ -143,12 +145,7 @@ void setTime()
 void setHistory()
 {
 	if (phistory == 255)
-	{
-		// Dyn_Code(DI_null, DI_null, DI_null, DI_null, 0);
-		// Dyn_Code(DI_null, DI_null, DI_code_n, DI_code_o, 1);
-		// Dyn_Code(DI_code_h, DI_code_i, DI_code_S, DI_code_t, 2);
 		return;
-	}
 	putsf("Set History\r");
 	blinkDots = 0;
 	display = &dispHistory;
@@ -167,12 +164,45 @@ void setMain()
 	delay_meas_t = 1;
 	delay_meas_p = 1;
 	blinkDots = 1;
+	enableColon = 1;
 	display = &dispMain;
 	onPlusPressed = &setHistory;
 	onMinusPressed = &setHistory;
 	onMenuPressed = &setTime;
 	onPlusHold = &terminator;
+	onMinusHold = &showVersion;
+	onMenuHold = &terminator;
+}
+
+void showPhone()
+{
+	putsf("Phone\r");
+	enableColon = 0;
+	display = &dispPhone;
+	onPlusPressed = &terminator;
+	onMinusPressed = &terminator;
+	onMenuPressed = &terminator;
+	onPlusHold = &terminator;
 	onMinusHold = &terminator;
+	onMenuHold = &terminator;
+	delay_switch_t = DELAY_SWITCH_T / 3;
+	setTimeout(MODE_TIMEOUT, &setMain);
+}
+
+void showVersion()
+{
+	putsf("Versions\r");
+	enableColon = 0;
+	DI_LED1_COLON = 0;
+	display = &dispVersion;
+	onPlusPressed = &terminator;
+	onMinusPressed = &terminator;
+	onMenuPressed = &terminator;
+	onPlusHold = &terminator;
+	onMinusHold = &terminator;
+	onMenuHold = &showPhone;
+	delay_switch_t = DELAY_SWITCH_T / 3;
+	setTimeout(MODE_TIMEOUT, &setMain);
 }
 
 void main(void)

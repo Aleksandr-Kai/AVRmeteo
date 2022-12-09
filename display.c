@@ -26,7 +26,7 @@ unsigned int delay_meas_p = 1;
 #define TIME_LED 0
 #define INNER_LED 1
 #define OUTER_LED 2
-#define TEMP_FAIL_LIMIT 8
+#define TEMP_FAIL_LIMIT 20
 
 char tsensor = 0;
 int fp, ft;
@@ -133,7 +133,7 @@ void dispMain()
 	if ((phistory != hh) && (mm < 30))
 	{
 		phistory = hh;
-		history[phistory].inT = ft;
+		history[phistory].inT = lastValid_ft;
 		history[phistory].outT = outtemp;
 		history[phistory].P = fp;
 	}
@@ -202,4 +202,21 @@ void dispTime()
 		timeBlink = 0;
 	Dyn_Code(DI_null, DI_null, DI_null, DI_null, INNER_LED);
 	Dyn_Code(DI_null, DI_null, DI_null, DI_null, OUTER_LED);
+}
+
+void dispVersion()
+{
+	char b = build;
+	if (b < 10)
+		b *= 10;
+	Dyn_Code(DI_code_U, DI_code_E, DI_code_r, DI_code_S, TIME_LED);
+	Dyn_Code(DI_code_H, DI_null, DI_null, digits[hw], INNER_LED);
+	Dyn_Code(DI_code_F, digits[fw] & DI_dot, digits[b / 10], digits[b % 10], OUTER_LED);
+}
+
+void dispPhone()
+{
+	Dyn_Number(7909, 0, TIME_LED);
+	Dyn_Number(407, 0, INNER_LED);
+	Dyn_Number(3167, 0, OUTER_LED);
 }
