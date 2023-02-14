@@ -2,7 +2,7 @@
 //*********************************************************************************************************************
 char temprcv = 0;
 int outtemp;
-char outtempready = 0;
+char outerTempUpdated = 0;
 //*********************************************************************************************************************
 
 #define DATA_REGISTER_EMPTY (1 << UDRE)
@@ -99,7 +99,7 @@ interrupt[USART_RXC] void usart_rx_isr(void)
       if (data == 0x88)
       {
          temprcv = 1;
-         outtempready = 0;
+         outerTempUpdated = 0;
       }
       break;
    case 1:
@@ -110,7 +110,7 @@ interrupt[USART_RXC] void usart_rx_isr(void)
    case 2:
       outtemp |= data;
       temprcv = 0;
-      outtempready = 1;
+      outerTempUpdated = 1;
       break;
 
    default:

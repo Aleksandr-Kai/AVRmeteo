@@ -28,14 +28,16 @@ unsigned int delay_meas_p = 1;
 #define OUTER_LED 2
 #define TEMP_FAIL_LIMIT 20
 
-char tsensor = 0;
+char showOuterTemp = 0;
 int fp, ft;
 int lastValid_ft = 0;
 char ft_valid_cnt = TEMP_FAIL_LIMIT;
-char outcnt = 0;
+// char outcnt = 0;
 
-#define OUTER_SENSOR_TIMEOUT 2
-#define OUTER_SENSOR_FAIL outcnt == OUTER_SENSOR_TIMEOUT
+int lastUpdateOuterSensor = 0;
+
+#define OUTER_SENSOR_TIMEOUT 5
+// #define OUTER_SENSOR_FAIL outcnt == OUTER_SENSOR_TIMEOUT
 
 char isCorrectTemp(int t)
 {
@@ -49,6 +51,23 @@ char isCorrectPressure(int p)
 	return (p > PRESSURE_LIMIT_DOWN) && (p < PRESSURE_LIMIT_UP);
 }
 
+char OuterSensorFail(char hh, char mm) {
+	int minutes,dm;
+	if (lastUpdateOuterSensor < 0) return 1;
+	minutes = (int)hh * 60 + mm;
+	dm = minutes - lastUpdateOuterSensor;
+	if (dm >= OUTER_SENSOR_TIMEOUT) {
+		lastUpdateOuterSensor = -1;
+		return 1;
+	}
+
+	return 0;
+}
+
+void updateOuterSensorTimeout(char hh, char mm){
+	lastUpdateOuterSensor = (int)hh * 60 + mm;
+}
+
 void dispMain()
 {
 	BMP280_S32_t adcP, adcT;
@@ -56,12 +75,12 @@ void dispMain()
 	if (--delay_switch_t == 0)
 	{
 		delay_switch_t = DELAY_SWITCH_T;
-		tsensor = !tsensor;
-		if (!tsensor && !outtempready)
-		{
-			if (++outcnt > OUTER_SENSOR_TIMEOUT)
-				outcnt = OUTER_SENSOR_TIMEOUT;
-		}
+		showOuterTemp = !showOuterTemp;
+		// if (!showOuterTemp && !outerTempUpdated)
+		// {
+		// 	if (++outcnt > OUTER_SENSOR_TIMEOUT)
+		// 		outcnt = OUTER_SENSOR_TIMEOUT;
+		// }
 	}
 
 	if (--delay_meas_t == 0)
@@ -104,7 +123,7 @@ void dispMain()
 		Dyn_Code(DI_minus, DI_minus, DI_minus, DI_minus, INNER_LED);
 
 	// select current data for OUTER_LED
-	if (tsensor)
+	if (!showOuterTemp)
 	{
 		// display PRESSURE
 		if (isCorrectPressure(fp))
@@ -115,13 +134,14 @@ void dispMain()
 	else
 	{
 		// check outer t sensor
-		if (outtempready)
+		if (outerTempUpdated)
 		{
-			outcnt = 0;
-			outtempready = 0;
+			// outcnt = 0;
+			outerTempUpdated = 0;
+			updateOuterSensorTimeout(hh, mm);
 		}
 		// display OUTER TEMPRETURE
-		if ((OUTER_SENSOR_FAIL) || !isCorrectTemp(outtemp))
+		if (!OuterSensorFail(hh, mm) || !isCorrectTemp(outtemp))
 		{
 			Dyn_Code(DI_minus, DI_minus, DI_minus, DI_code_t, OUTER_LED);
 		}
@@ -139,7 +159,7 @@ void dispMain()
 	}
 	else if (!isCorrectTemp(history[phistory].outT) && (mm < 30))
 	{
-		if ((OUTER_SENSOR_FAIL) || !isCorrectTemp(outtemp))
+		if (!OuterSensorFail(hh, mm) || !isCorrectTemp(outtemp))
 			history[phistory].outT = TEMP_LIMIT * 10;
 		else
 			history[phistory].outT = outtemp;
@@ -169,10 +189,10 @@ void dispHistory()
 	if (--delay_switch_t == 0)
 	{
 		delay_switch_t = DELAY_SWITCH_T / 3;
-		tsensor = !tsensor;
+		showOuterTemp = !showOuterTemp;
 	}
 
-	if (tsensor)
+	if (showOuterTemp)
 	{
 		if (!isCorrectPressure(history[hh].P))
 			Dyn_Code(DI_minus, DI_minus, DI_minus, DI_code_P, OUTER_LED);
