@@ -36,7 +36,7 @@ char ft_valid_cnt = TEMP_FAIL_LIMIT;
 
 int lastUpdateOuterSensor = 0;
 
-#define OUTER_SENSOR_TIMEOUT 5
+#define OUTER_SENSOR_TIMEOUT 15
 // #define OUTER_SENSOR_FAIL outcnt == OUTER_SENSOR_TIMEOUT
 
 char isCorrectTemp(int t)
@@ -52,12 +52,18 @@ char isCorrectPressure(int p)
 }
 
 char OuterSensorFail(char hh, char mm) {
+	// char buff[128];
 	int minutes,dm;
 	if (lastUpdateOuterSensor < 0) return 1;
 	minutes = (int)hh * 60 + mm;
 	dm = minutes - lastUpdateOuterSensor;
+
+	// sprintf(buff, "%i->%i, %i", lastUpdateOuterSensor, minutes, dm);
+	// puts(buff);
+
 	if (dm >= OUTER_SENSOR_TIMEOUT) {
 		lastUpdateOuterSensor = -1;
+		outtemp = TEMP_LIMIT*10;
 		return 1;
 	}
 
@@ -138,10 +144,11 @@ void dispMain()
 		{
 			// outcnt = 0;
 			outerTempUpdated = 0;
-			updateOuterSensorTimeout(hh, mm);
+			if(isCorrectTemp(outtemp))
+				updateOuterSensorTimeout(hh, mm);
 		}
 		// display OUTER TEMPRETURE
-		if (!OuterSensorFail(hh, mm) || !isCorrectTemp(outtemp))
+		if (OuterSensorFail(hh, mm) || !isCorrectTemp(outtemp))
 		{
 			Dyn_Code(DI_minus, DI_minus, DI_minus, DI_code_t, OUTER_LED);
 		}
@@ -159,7 +166,7 @@ void dispMain()
 	}
 	else if (!isCorrectTemp(history[phistory].outT) && (mm < 30))
 	{
-		if (!OuterSensorFail(hh, mm) || !isCorrectTemp(outtemp))
+		if (OuterSensorFail(hh, mm) || !isCorrectTemp(outtemp))
 			history[phistory].outT = TEMP_LIMIT * 10;
 		else
 			history[phistory].outT = outtemp;
