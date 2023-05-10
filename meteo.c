@@ -26,7 +26,7 @@ Data Stack size         : 256
 #include "meteo_conf.c"
 #include "rc3231.c"
 #include "bmp180.c"
-#include "virsion.h"
+#include "version.h"
 
 #define MODE_TIMEOUT 5000
 

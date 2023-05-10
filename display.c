@@ -11,7 +11,7 @@ struct
 } history[24];
 char phistory = 255;
 
-#define DELAY_SWITCH_T 2000
+#define DELAY_SWITCH_T 3000
 unsigned int delay_switch_t = 1;
 
 #define DELAY_MEAS_T 500
@@ -28,7 +28,7 @@ unsigned int delay_meas_p = 1;
 #define OUTER_LED 2
 #define TEMP_FAIL_LIMIT 20
 
-char showOuterTemp = 0;
+char showPressure = 0;
 int fp, ft;
 int lastValid_ft = 0;
 char ft_valid_cnt = TEMP_FAIL_LIMIT;
@@ -80,9 +80,13 @@ void dispMain()
 
 	if (--delay_switch_t == 0)
 	{
-		delay_switch_t = DELAY_SWITCH_T;
-		showOuterTemp = !showOuterTemp;
-		// if (!showOuterTemp && !outerTempUpdated)
+		
+		showPressure = !showPressure;
+		if(showPressure) 
+			delay_switch_t = DELAY_SWITCH_T * 3;
+		else
+			delay_switch_t = DELAY_SWITCH_T;
+		// if (!showPressure && !outerTempUpdated)
 		// {
 		// 	if (++outcnt > OUTER_SENSOR_TIMEOUT)
 		// 		outcnt = OUTER_SENSOR_TIMEOUT;
@@ -122,39 +126,40 @@ void dispMain()
 	// display TIME
 	Dyn_Code(digits[hh / 10], digits[hh % 10], digits[mm / 10], digits[mm % 10], TIME_LED);
 
-	// display INNER TEMPERATURE
-	if (ft_valid_cnt < TEMP_FAIL_LIMIT)
-		Dyn_Number(lastValid_ft, 1, INNER_LED);
-	else
-		Dyn_Code(DI_minus, DI_minus, DI_minus, DI_minus, INNER_LED);
-
-	// select current data for OUTER_LED
-	if (!showOuterTemp)
+	// select current data for INNER_LED
+	if (showPressure)
 	{
 		// display PRESSURE
 		if (isCorrectPressure(fp))
-			Dyn_Number(fp, 1, OUTER_LED);
+			Dyn_Number(fp, 1, INNER_LED);
 		else
-			Dyn_Code(DI_minus, DI_minus, DI_minus, DI_code_P, OUTER_LED);
+			Dyn_Code(DI_minus, DI_minus, DI_minus, DI_code_P, INNER_LED);
 	}
 	else
 	{
-		// check outer t sensor
-		if (outerTempUpdated)
-		{
-			// outcnt = 0;
-			outerTempUpdated = 0;
-			if(isCorrectTemp(outtemp))
-				updateOuterSensorTimeout(hh, mm);
-		}
-		// display OUTER TEMPRETURE
-		if (OuterSensorFail(hh, mm) || !isCorrectTemp(outtemp))
-		{
-			Dyn_Code(DI_minus, DI_minus, DI_minus, DI_code_t, OUTER_LED);
-		}
+		// display INNER TEMPERATURE
+		if (ft_valid_cnt < TEMP_FAIL_LIMIT)
+			Dyn_Number(lastValid_ft, 1, INNER_LED);
 		else
-			Dyn_Number(outtemp, 1, OUTER_LED);
+			Dyn_Code(DI_minus, DI_minus, DI_minus, DI_minus, INNER_LED);
 	}
+
+	// check outer t sensor
+	if (outerTempUpdated)
+	{
+		// outcnt = 0;
+		outerTempUpdated = 0;
+		if(isCorrectTemp(outtemp))
+			updateOuterSensorTimeout(hh, mm);
+	}
+
+	// display OUTER TEMPRETURE
+	if (OuterSensorFail(hh, mm) || !isCorrectTemp(outtemp))
+	{
+		Dyn_Code(DI_minus, DI_minus, DI_minus, DI_code_t, OUTER_LED);
+	}
+	else
+		Dyn_Number(outtemp, 1, OUTER_LED);
 
 	// write HISTORY
 	if ((phistory != hh) && (mm < 30))
@@ -188,30 +193,31 @@ void dispHistory()
 	else
 		timeBlink = 0;
 
-	if (isCorrectTemp(history[hh].inT))
-		Dyn_Number(history[hh].inT, 1, INNER_LED);
-	else
-		Dyn_Code(DI_minus, DI_minus, DI_minus, DI_minus, INNER_LED);
 
 	if (--delay_switch_t == 0)
 	{
 		delay_switch_t = DELAY_SWITCH_T / 3;
-		showOuterTemp = !showOuterTemp;
+		showPressure = !showPressure;
 	}
 
-	if (showOuterTemp)
+	if (isCorrectTemp(history[hh].outT))
+		Dyn_Number(history[hh].outT, 1, OUTER_LED);
+	else
+		Dyn_Code(DI_minus, DI_minus, DI_minus, DI_code_t, OUTER_LED);
+
+	if (showPressure)
 	{
 		if (!isCorrectPressure(history[hh].P))
-			Dyn_Code(DI_minus, DI_minus, DI_minus, DI_code_P, OUTER_LED);
+			Dyn_Code(DI_minus, DI_minus, DI_minus, DI_code_P, INNER_LED);
 		else
-			Dyn_Number(history[hh].P, 1, OUTER_LED);
+			Dyn_Number(history[hh].P, 1, INNER_LED);
 	}
 	else
 	{
-		if (isCorrectTemp(history[hh].outT))
-			Dyn_Number(history[hh].outT, 1, OUTER_LED);
+		if (isCorrectTemp(history[hh].inT))
+			Dyn_Number(history[hh].inT, 1, INNER_LED);
 		else
-			Dyn_Code(DI_minus, DI_minus, DI_minus, DI_code_t, OUTER_LED);
+			Dyn_Code(DI_minus, DI_minus, DI_minus, DI_minus, INNER_LED);
 	}
 }
 

@@ -7,7 +7,7 @@ A=
 C=
 D=29.03.2022
 Files=1
-OpenedFiles=5
+OpenedFiles=6
 OF1=meteo_conf.c
 Active1=0
 DebugOutputListFilesDirectory=Debug\List
@@ -42,13 +42,18 @@ PageIndex3=3
 OF4=..\outtemp\main.c
 Active4=0
 EditorPanel4=0
-TimeStamp4=1447985480
+TimeStamp4=1450214768
 PageIndex4=4
 OF5=display.c
 Active5=1
 EditorPanel5=0
-TimeStamp5=1447985633
+TimeStamp5=1450659385
 PageIndex5=5
+OF6=meteo.c
+Active6=0
+EditorPanel6=0
+TimeStamp6=1435061013
+PageIndex6=6
 [CompilerDebug]
 Chip=ATmega16A
 CPUClock=16000000
@@ -147,8 +152,8 @@ WatchAVR8LAutoVariables=0
 UseEEPROMLocation0=1
 RebuildAll=0
 LinkageInformationPresent=1
-COFFileTimeStamp=1447985640
-Build=583
+COFFileTimeStamp=1450659387
+Build=587
 [DefinedSymbolsDebug]
 Count=0
 [Compiler]
@@ -250,7 +255,7 @@ UseEEPROMLocation0=1
 RebuildAll=1
 LinkageInformationPresent=0
 COFFileTimeStamp=-1
-Build=583
+Build=587
 IncludePath0=
 IncludePath1=
 IncludePath2=
@@ -482,11 +487,11 @@ F9=uart.c
 F10=C:\cvavreval\inc\stdlib.h
 F11=..\outtemp\main.c
 [Bookmarks1]
-TimeStamp=1434876750
-Row=0
+TimeStamp=1435061013
+Row=160
 Column=0
 ScrollPosX=0
-ScrollPosY=0
+ScrollPosY=121
 BK0=-1
 BK1=-1
 BK2=-1
@@ -514,8 +519,8 @@ L13=Enhanced function parameters passing: Yes
 L14=Automatic register allocation: Yes
 L15=Smart register allocation: Yes
 L16=
-L17=Build: 582
-L18=14972 line(s) compiled
+L17=Build: 586
+L18=14979 line(s) compiled
 L19=No errors
 L20=6 warning(s)
 L21=
@@ -536,19 +541,19 @@ L35=Heap size: 0 byte(s)
 Lines=39
 L36=
 L37=EEPROM usage: 0 byte(s), 0,0% of EEPROM
-L38=Program size: 4307 words (8614 bytes), 52,6% of FLASH
-L39=418 words (836 bytes), 8,8% reduced by Code Compression
+L38=Program size: 4315 words (8630 bytes), 52,7% of FLASH
+L39=424 words (848 bytes), 8,9% reduced by Code Compression
 [BuildInfoAssembler]
 Lines=12
 L1=AVRASM: AVR macro assembler 2.1.30 (build 592 Nov  7 2008 12:38:17)
 L2=Copyright (C) 1995-2008 ATMEL Corporation
 L3=
-L4=Z:\home\kai\AVR projects\MeteoStation\termometr 2\Debug\List\meteo.asm(6778): No EEPROM data, deleting Z:\home\kai\AVR projects\MeteoStation\termometr 2\Debug\Exe\meteo.eep
+L4=Z:\home\kai\AVR projects\MeteoStation\termometr 2\Debug\List\meteo.asm(6790): No EEPROM data, deleting Z:\home\kai\AVR projects\MeteoStation\termometr 2\Debug\Exe\meteo.eep
 L5=
 L6=ATmega16A memory use summary [bytes]:
 L7=Segment   Begin    End      Code   Data   Used    Size   Use%
 L8=---------------------------------------------------------------
-L9=[.cseg] 0x000000 0x0021a6   8386    228   8614   16384  52.6%
+L9=[.cseg] 0x000000 0x0021b6   8402    228   8630   16384  52.7%
 L10=[.dseg] 0x000060 0x00036e      0    352    352    1024  34.4%
 L11=[.eseg] 0x000000 0x000000      0      0      0     512   0.0%
 L12=
@@ -581,7 +586,7 @@ Row=0
 Column=0
 ScrollPosX=0
 ScrollPosY=0
-TimeStamp=1447985793
+TimeStamp=1450662712
 [Bookmarks2]
 TimeStamp=1434942089
 Row=33
@@ -667,7 +672,7 @@ Blocks=0
 [FoldedCode4]
 Blocks=0
 [Bookmarks7]
-TimeStamp=1447985633
+TimeStamp=1450659385
 Row=0
 Column=0
 ScrollPosX=0
@@ -683,8 +688,6 @@ BK7=-1
 BK8=-1
 BK9=-1
 [FoldedCode5]
-Blocks=0
-[FoldedCode1]
 Blocks=0
 [Bookmarks8]
 TimeStamp=1435060978
@@ -739,7 +742,7 @@ BK9=-1
 [FoldedCode10]
 Blocks=0
 [Bookmarks11]
-TimeStamp=1447985480
+TimeStamp=1450214768
 Row=0
 Column=0
 ScrollPosX=0
@@ -779,6 +782,8 @@ F17=C:\cvavreval\inc\math.h
 F18=virsion.h
 F19=display.c
 F20=buttons.c
+[FoldedCode1]
+Blocks=0
 [FoldedCode7]
 Blocks=0
 [FoldedCode11]
